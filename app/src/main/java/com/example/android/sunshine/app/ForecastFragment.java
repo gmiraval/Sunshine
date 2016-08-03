@@ -197,9 +197,9 @@ public class ForecastFragment extends Fragment {
                 resultStrs[i] = day + " - " + description + " - " + highAndLow;
             }
 
-            for (String s : resultStrs) {
+/*            for (String s : resultStrs) {
                 Log.v(LOG_TAG, "Forecast entry: " + s);
-            }
+            }*/
             return resultStrs;
 
         }
@@ -208,7 +208,7 @@ public class ForecastFragment extends Fragment {
         @Override
 //        protected Void doInBackground(Void... params) {
 //        protected Void doInBackground(String... params) {//cambiamos param Void por String
-            protected String[] doInBackground(String... params) {//cambiamos return Void por String
+        protected String[] doInBackground(String... params) {//cambiamos return Void por String
 
             // If there's no zip code, there's nothing to look up.  Verify size of params.
             if (params.length == 0) {
@@ -255,7 +255,7 @@ public class ForecastFragment extends Fragment {
 
                         URL url = new URL(builtUri.toString());
 
-                        Log.v(LOG_TAG, "Built URI " + builtUri.toString());//imprimo URL armada en el log
+//                        Log.v(LOG_TAG, "Built URI " + builtUri.toString());//imprimo URL armada en el log
 
 
                 // Create the request to OpenWeatherMap, and open the connection
@@ -286,7 +286,7 @@ public class ForecastFragment extends Fragment {
                 }
                 forecastJsonStr = buffer.toString();
 
-                Log.v(LOG_TAG, "Forecast JSON String: " + forecastJsonStr);//imprimo la respuesta json
+//                Log.v(LOG_TAG, "Forecast JSON String: " + forecastJsonStr);//imprimo la respuesta json
 
 
             } catch (IOException e) {
@@ -313,10 +313,21 @@ public class ForecastFragment extends Fragment {
                 Log.e(LOG_TAG, e.getMessage(), e);
                 e.printStackTrace();
             }
-            
+
             return null;
         }
+
+        @Override
+        protected void onPostExecute(String[] result) {
+        if (result != null) {
+            mForecastAdapter.clear();
+            for(String dayForecastStr : result) {
+                mForecastAdapter.add(dayForecastStr);
+            }
+            // New data is back from the server.  Hooray!
+        }
     }
+}
 
 
 
