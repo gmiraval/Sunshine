@@ -12,8 +12,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,18 +44,31 @@ public class ForecastFragment extends Fragment {
     }
 
 
+   /**
+    *  Ponemos que el fragmento tenga menu.
+    *  onCreate:In this method, you can assign variables,
+    *  get Intent extras, and anything else that
+    *  doesn't involve the View hierarchy (i.e. non-graphical initialisations).
+    */
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Add this line in order for this fragment to handle menu events.
-        setHasOptionsMenu(true);
+
+        setHasOptionsMenu(true);// Add this line in order for this fragment to handle menu events.
     }
 
+    /**
+     * Aca ponemos que xml inflate con data del menu
+     */
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.forecastfragment, menu);
     }
 
+    /**
+     * Aca declaramos item Refresh en el menu bar
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -70,6 +85,15 @@ public class ForecastFragment extends Fragment {
     }
 
 
+    /**Configuro que layout inflate(fragment_main.xml).Defino el adapter (mForecastAdapter)
+     * que va a popular el listView con los datos del clima.
+     *
+     *onCreateView():Called after onCreate().
+     * You can assign your View variables and do any graphical initialisations.
+     *  You are expected to return a View to this method,
+     *  and this is the main UI view, but if your Fragment
+     *  does not use any layouts or graphics, you can return null.
+     */
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -96,8 +120,27 @@ public class ForecastFragment extends Fragment {
         ListView listView =  (ListView) rootView.findViewById(R.id.listview_forecast);
         listView.setAdapter(mForecastAdapter);
 
+        /**
+         * Rutina que hace algo cuando hago un click en un Item del listView.
+         * Recordar que AdapterView es la superclase de listView de la cual hereda metodos
+         */
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                String forecast = mForecastAdapter.getItem(position);
+                //Toast me sirve para poner un pequeño pop up con la data del item en este caso(forecast)
+                Toast.makeText(getActivity(), forecast, Toast.LENGTH_SHORT).show();}
+        });
+
         return rootView;
     }
+
+    /**
+     * Clase que extiende la AsyncTask. Hace la consulta a la API de clima y devuelve data
+     * a mForecastAdapter, que es el adapter de la listView que  muestra los datos en el fragment_main
+     */
 
 //    public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
 //    public class FetchWeatherTask extends AsyncTask<String, Void, Void> { //cambiamos param Void por String
@@ -105,9 +148,11 @@ public class ForecastFragment extends Fragment {
 
         private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
 
-        /* The date/time conversion code is going to be moved outside the asynctask later,
- * so for convenience we're breaking it out into its own method now.
- */
+        /**
+         * FUNCTION
+         * The date/time conversion code is going to be moved outside the asynctask later,
+         * so for convenience we're breaking it out into its own method now.
+        */
         private String getReadableDateString(long time){
             // Because the API returns a unix timestamp (measured in seconds),
             // it must be converted to milliseconds in order to be converted to valid date.
@@ -116,6 +161,7 @@ public class ForecastFragment extends Fragment {
         }
 
         /**
+         * FUNCTION
          * Prepare the weather high/lows for presentation.
          */
         private String formatHighLows(double high, double low) {
@@ -128,6 +174,7 @@ public class ForecastFragment extends Fragment {
         }
 
         /**
+         * FUNCTION
          * Take the String representing the complete forecast in JSON Format and
          * pull out the data we need to construct the Strings needed for the wireframes.
          *
@@ -204,10 +251,10 @@ public class ForecastFragment extends Fragment {
 
         }
 
-
+    /**
+     * Hacemos la consulta http en background,toma como parámetro string con la url.
+     */
         @Override
-//        protected Void doInBackground(Void... params) {
-//        protected Void doInBackground(String... params) {//cambiamos param Void por String
         protected String[] doInBackground(String... params) {//cambiamos return Void por String
 
             // If there's no zip code, there's nothing to look up.  Verify size of params.
@@ -315,8 +362,11 @@ public class ForecastFragment extends Fragment {
             }
 
             return null;
-        }
+        }//devolvemos string array
 
+    /**
+     * Toma el string array que devuelve la rutina de background y la pone en mForecastAdapter.
+     */
         @Override
         protected void onPostExecute(String[] result) {
         if (result != null) {
