@@ -1,9 +1,11 @@
 package com.example.android.sunshine.app;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
 import android.util.Log;
@@ -78,7 +80,18 @@ public class ForecastFragment extends Fragment {
         if (id == R.id.action_refresh) {
             FetchWeatherTask weatherTask = new FetchWeatherTask();
             //weatherTask.execute();
-            weatherTask.execute("94043");//modificamos para que tome codigo postal como parametro
+//            weatherTask.execute("94043");//modificamos para que tome codigo postal como parametro
+
+            //getActivity() in a Fragment returns the Activity the Fragment is currently associated with.
+            //PreferenceManager:Used to help create Preference hierarchies from activities or XML.
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+/*            getString(String key, String defValue)
+            Retrieve a String value from the preferences.*/
+            String location = prefs.getString(getString(R.string.pref_location_key),getString(R.string.pref_location_default));
+
+            //busco el clima de esa location
+            weatherTask.execute(location);
             return true;
         }
         return super.onOptionsItemSelected(item);
