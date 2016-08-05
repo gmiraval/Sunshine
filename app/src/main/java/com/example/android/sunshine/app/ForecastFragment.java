@@ -31,8 +31,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 /**
@@ -78,7 +76,8 @@ public class ForecastFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            FetchWeatherTask weatherTask = new FetchWeatherTask();
+
+            /*            FetchWeatherTask weatherTask = new FetchWeatherTask();
             //weatherTask.execute();
 //            weatherTask.execute("94043");//modificamos para que tome codigo postal como parametro
 
@@ -86,12 +85,17 @@ public class ForecastFragment extends Fragment {
             //PreferenceManager:Used to help create Preference hierarchies from activities or XML.
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-/*            getString(String key, String defValue)
-            Retrieve a String value from the preferences.*/
+*//*            getString(String key, String defValue)
+            Retrieve a String value from the preferences.
+            Returns the preference value if it exists, or defValue.
+            Throws ClassCastException if there is a preference with this name that is not a String.*//*
             String location = prefs.getString(getString(R.string.pref_location_key),getString(R.string.pref_location_default));
 
             //busco el clima de esa location
-            weatherTask.execute(location);
+            weatherTask.execute(location);*/
+
+            updateWeather();
+
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -112,6 +116,7 @@ public class ForecastFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+/*
         String[] data = {
         "Mon 6/23 - Sunny - 31/17", "Tue 6/24 - Foggy - 21/8",
                 "Wed 6/25 - Cloudy - 22/17",
@@ -121,12 +126,14 @@ public class ForecastFragment extends Fragment {
                 "Sun 6/29 - Sunny - 20/7"
                  };
         List<String> weekForecast = new ArrayList<String>(Arrays.asList(data));
+*/
 
     mForecastAdapter = new ArrayAdapter<String>(
                         getActivity(), // The current context (this activity)
                         R.layout.list_item_forecast, // The name of the layout ID.
                         R.id.list_item_forecast_textview, // The ID of the textview to populate.
-                        weekForecast);
+//                        weekForecast);
+                        new ArrayList<String>());
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
@@ -155,6 +162,22 @@ public class ForecastFragment extends Fragment {
 
         return rootView;
     }
+
+    private void updateWeather() {
+        FetchWeatherTask weatherTask = new FetchWeatherTask();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String location = prefs.getString(getString(R.string.pref_location_key),
+                getString(R.string.pref_location_default));
+        weatherTask.execute(location);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
+    }
+
+
 
     /**
      * Clase que extiende la AsyncTask. Hace la consulta a la API de clima y devuelve data
