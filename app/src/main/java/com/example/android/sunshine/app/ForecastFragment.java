@@ -133,7 +133,7 @@ public class ForecastFragment extends Fragment {
 
                 /*                //Toast me sirve para poner un pequeño pop up con la data del item en este caso(forecast)
                 Toast.makeText(getActivity(), forecast, Toast.LENGTH_SHORT).show();}*/
-                Intent intent = new Intent(getActivity(), DetailActivity.class)
+                Intent intent = new Intent(getActivity(), DetailActivity.class) //explicit intent
                         .putExtra(Intent.EXTRA_TEXT, forecast);
                 startActivity(intent);
             }
