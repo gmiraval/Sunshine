@@ -49,7 +49,7 @@ public class SettingsActivity extends PreferenceActivity
     }
 
     @Override
-    public boolean onPreferenceChange(Preference preference, Object value) {
+     public boolean onPreferenceChange(Preference preference, Object value) {
         String stringValue = value.toString();
 
         if (preference instanceof ListPreference) {
