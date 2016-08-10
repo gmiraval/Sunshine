@@ -47,4 +47,7 @@
 <!--Nombre que le damos a laopcion del menu que muestra en mapa-->
     <string name="action_map">Map Location</string>
 
+    <!--Nombre de la opción share-->
+    <string name="action_share">Share</string>
+
 </resources>
