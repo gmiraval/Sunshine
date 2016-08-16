@@ -8,5 +8,7 @@
     tools:context="com.example.android.sunshine.app.DetailActivity"
     android:id="@+id/container">
 
+
+
 </android.support.design.widget.CoordinatorLayout>
 
